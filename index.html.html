@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glowstone Industries — Sample Piece Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #0a5c45;
+    --green-mid: #0f7a5a;
+    --green-light: #e6f4ef;
+    --green-border: #b2d9cc;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --border: #e5e7eb;
+    --border-strong: #d1d5db;
+    --surface: #ffffff;
+    --bg: #f8faf9;
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --radius-lg: 14px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--green-dark);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .topbar-icon svg { width: 20px; height: 20px; fill: #fff; }
+  .topbar-text h1 { font-size: 15px; font-weight: 600; color: #fff; }
+  .topbar-text p  { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 1px; }
+
+  /* ── Layout ── */
+  .page { max-width: 740px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .card-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: #fafafa;
+  }
+  .card-head-icon {
+    width: 30px; height: 30px;
+    background: var(--green-light);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-head-icon svg { width: 16px; height: 16px; stroke: var(--green-dark); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .card-head-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .card-body { padding: 20px; }
+
+  /* ── Fields ── */
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+  .req { color: var(--danger); margin-left: 2px; }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--surface);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    appearance: none;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(15,122,90,0.1);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
+  .field textarea { resize: vertical; min-height: 72px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ── Items table ── */
+  .items-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+  .items-table thead th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .items-table thead th:last-child { width: 40px; }
+  .items-table tbody tr td { padding: 6px 4px; vertical-align: middle; }
+  .items-table tbody tr td:first-child { padding-left: 0; }
+  .items-table tbody tr td:last-child { padding-right: 0; width: 40px; }
+  .items-table tbody tr + tr td { border-top: none; }
+
+  .items-table input {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .items-table input:focus {
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(15,122,90,0.1);
+  }
+  .items-table input::placeholder { color: var(--text-muted); font-size: 12px; }
+  .items-table input[type="number"] { -moz-appearance: textfield; }
+  .items-table input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .col-name  { width: 30%; }
+  .col-size  { width: 18%; }
+  .col-thick { width: 18%; }
+  .col-sets  { width: 12%; }
+  .col-pcs   { width: 12%; }
+  .col-del   { width: 10%; }
+
+  .del-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    margin: 0 auto;
+  }
+  .del-btn:hover { border-color: var(--danger); background: var(--danger-bg); }
+  .del-btn svg { width: 15px; height: 15px; stroke: var(--text-muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.15s; }
+  .del-btn:hover svg { stroke: var(--danger); }
+
+  .add-item-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 10px 16px;
+    width: 100%;
+    border: 1.5px dashed var(--green-border);
+    border-radius: var(--radius-sm);
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 4px;
+  }
+  .add-item-btn:hover { background: #d2ece4; border-color: var(--green-mid); }
+  .add-item-btn svg { width: 16px; height: 16px; stroke: var(--green-dark); fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+  /* ── Totals strip ── */
+  .totals-strip {
+    display: flex; gap: 10px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .total-box {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    text-align: center;
+  }
+  .total-box .tb-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  .total-box .tb-value { font-size: 22px; font-weight: 600; color: var(--green-dark); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+  /* ── Error bar ── */
+  .err-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--danger);
+    margin-bottom: 16px;
+  }
+  .err-bar.show { display: flex; }
+  .err-bar svg { width: 16px; height: 16px; stroke: var(--danger); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--green-dark);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    transition: background 0.15s, transform 0.1s;
+    box-shadow: var(--shadow-md);
+    margin-top: 8px;
+  }
+  .submit-btn:hover { background: var(--green-mid); }
+  .submit-btn:active { transform: scale(0.99); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .submit-btn svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Spinner ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+
+  /* ══════════════════════════════
+     RECEIPT VIEW
+  ══════════════════════════════ */
+  #receiptView { display: none; }
+
+  .success-banner {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px;
+    background: var(--green-light);
+    border: 1px solid var(--green-border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+  }
+  .success-banner svg { width: 22px; height: 22px; stroke: var(--green-dark); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+  .success-banner-text h3 { font-size: 14px; font-weight: 600; color: var(--green-dark); }
+  .success-banner-text p  { font-size: 12px; color: var(--green-mid); margin-top: 2px; }
+
+  .receipt {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .receipt-header {
+    background: var(--green-dark);
+    padding: 18px 22px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  }
+  .receipt-header-left h2 { font-size: 15px; font-weight: 600; color: #fff; }
+  .receipt-header-left p  { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 3px; }
+  .order-no-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    padding: 6px 13px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .receipt-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .meta-cell {
+    padding: 12px 22px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .meta-cell:nth-child(even) { border-right: none; }
+  .meta-cell.full { grid-column: 1 / -1; border-right: none; }
+  .meta-cell .mc-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .meta-cell .mc-value { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+
+  .receipt-items-section { padding: 16px 22px; }
+  .receipt-table { width: 100%; border-collapse: collapse; }
+  .receipt-table thead th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .receipt-table tbody td {
+    font-size: 13px;
+    color: var(--text-primary);
+    padding: 9px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .receipt-table tbody tr:last-child td { border-bottom: none; }
+  .receipt-table .sr-col { color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 12px; }
+
+  .receipt-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 22px;
+    background: #fafafa;
+    border-top: 1px solid var(--border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .receipt-totals { display: flex; gap: 20px; }
+  .receipt-total-item { font-size: 13px; color: var(--text-secondary); }
+  .receipt-total-item strong { color: var(--text-primary); font-weight: 600; }
+  .disclaimer { font-size: 11px; color: var(--text-muted); font-style: italic; }
+
+  .new-order-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .new-order-btn:hover { background: var(--bg); color: var(--text-primary); border-color: var(--green-mid); }
+  .new-order-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  @media (max-width: 560px) {
+    .two-col { grid-template-columns: 1fr; }
+    .topbar { padding: 12px 16px; }
+    .page { padding: 16px 12px 48px; }
+    .card-body { padding: 14px; }
+    .receipt-meta-grid { grid-template-columns: 1fr; }
+    .meta-cell { border-right: none; }
+    .receipt-table thead th:nth-child(3),
+    .receipt-table tbody td:nth-child(3) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-icon">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </div>
+  <div class="topbar-text">
+    <h1>Glowstone Industries Pvt Ltd</h1>
+    <p>Sample Piece Order Entry &nbsp;·&nbsp; Village Baran, Bhilwara – 311401</p>
+  </div>
+</div>
+
+<!-- ════════ FORM VIEW ════════ -->
+<div class="page" id="formView">
+
+  <div id="errBar" class="err-bar">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span id="errMsg"></span>
+  </div>
+
+  <!-- Salesperson & order info -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <span class="card-head-title">Salesperson &amp; order info</span>
+    </div>
+    <div class="card-body">
+      <div class="two-col">
+        <div class="field">
+          <label>Salesperson name <span class="req">*</span></label>
+          <input type="text" id="salesperson" placeholder="Your full name" autocomplete="name" />
+        </div>
+        <div class="field">
+          <label>Dispatch priority date <span class="req">*</span></label>
+          <input type="date" id="dispatchDate" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Party details -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </div>
+      <span class="card-head-title">Party details</span>
+    </div>
+    <div class="card-body">
+      <div class="two-col">
+        <div class="field">
+          <label>Party name <span class="req">*</span></label>
+          <input type="text" id="partyName" placeholder="e.g. City Office Bhilwara" />
+        </div>
+        <div class="field">
+          <label>Requested by</label>
+          <input type="text" id="requestedBy" placeholder="e.g. City Office – Glowstone" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Ship to address <span class="req">*</span></label>
+        <textarea id="shipTo" placeholder="Full delivery address with PIN code"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <span class="card-head-title">Item details</span>
+    </div>
+    <div class="card-body">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th class="col-name">Item name</th>
+            <th class="col-size">Size</th>
+            <th class="col-thick">Thickness</th>
+            <th class="col-sets">Sets</th>
+            <th class="col-pcs">Pcs</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+
+      <button type="button" class="add-item-btn" id="addItemBtn">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add another item
+      </button>
+
+      <div class="totals-strip">
+        <div class="total-box">
+          <div class="tb-label">Items</div>
+          <div class="tb-value" id="totalItems">0</div>
+        </div>
+        <div class="total-box">
+          <div class="tb-label">Total sets</div>
+          <div class="tb-value" id="totalSets">0</div>
+        </div>
+        <div class="total-box">
+          <div class="tb-label">Total pcs</div>
+          <div class="tb-value" id="totalPcs">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <span class="card-head-title">Note <span style="font-weight:400;color:var(--text-muted)">(optional)</span></span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <textarea id="note" placeholder="Any special instructions or remarks..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="submit-btn" id="submitBtn">
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    Submit order
+  </button>
+</div>
+
+<!-- ════════ RECEIPT VIEW ════════ -->
+<div class="page" id="receiptView">
+  <div class="success-banner">
+    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <div class="success-banner-text">
+      <h3 id="successHeading">Order submitted successfully</h3>
+      <p id="successSub">Data logged to sheet. Receipt below.</p>
+    </div>
+  </div>
+
+  <div class="receipt">
+    <div class="receipt-header">
+      <div class="receipt-header-left">
+        <h2>Glowstone Industries Pvt Ltd</h2>
+        <p>GSTIN: 08AAFCG6300F1ZY &nbsp;·&nbsp; Sample Piece Order Confirmation</p>
+      </div>
+      <div class="order-no-badge" id="r-orderNo">SP-26-27/0001</div>
+    </div>
+
+    <div class="receipt-meta-grid">
+      <div class="meta-cell">
+        <div class="mc-label">Date &amp; time</div>
+        <div class="mc-value" id="r-datetime">—</div>
+      </div>
+      <div class="meta-cell">
+        <div class="mc-label">Salesperson</div>
+        <div class="mc-value" id="r-salesperson">—</div>
+      </div>
+      <div class="meta-cell">
+        <div class="mc-label">Party name</div>
+        <div class="mc-value" id="r-party">—</div>
+      </div>
+      <div class="meta-cell">
+        <div class="mc-label">Requested by</div>
+        <div class="mc-value" id="r-reqby">—</div>
+      </div>
+      <div class="meta-cell full">
+        <div class="mc-label">Ship to</div>
+        <div class="mc-value" id="r-shipto">—</div>
+      </div>
+      <div class="meta-cell full" style="border-bottom:none">
+        <div class="mc-label">Dispatch priority date</div>
+        <div class="mc-value" id="r-dispatch">—</div>
+      </div>
+    </div>
+
+    <div class="receipt-items-section">
+      <table class="receipt-table">
+        <thead>
+          <tr>
+            <th style="width:36px">Sr</th>
+            <th>Item name</th>
+            <th>Size</th>
+            <th>Thickness</th>
+            <th style="width:60px">Sets</th>
+            <th style="width:60px">Pcs</th>
+          </tr>
+        </thead>
+        <tbody id="r-items"></tbody>
+      </table>
+    </div>
+
+    <div class="receipt-footer">
+      <div class="receipt-totals">
+        <div class="receipt-total-item">Total sets: <strong id="r-sets">—</strong></div>
+        <div class="receipt-total-item">Total pcs: <strong id="r-pcs">—</strong></div>
+      </div>
+      <div class="disclaimer">Sample piece order · No commercial value</div>
+    </div>
+  </div>
+
+  <button type="button" class="new-order-btn" id="newOrderBtn">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Place new order
+  </button>
+</div>
+
+<script>
+  /* ── CONFIG ── */
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby14VD1QhilZil9sqUs-iFWWDJawqRHmhIPyQVgnYLvZPkMaQwYn30DNjWJILqaj6kB/exec';
+
+  /* ── STATE ── */
+  let rowId = 0;
+
+  /* ── ITEM ROWS ── */
+  function addItem() {
+    rowId++;
+    const id = rowId;
+    const tbody = document.getElementById('itemsBody');
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + id;
+    tr.innerHTML = `
+      <td class="col-name"><input type="text" placeholder="Item name" id="iname-${id}" oninput="recalc()" /></td>
+      <td class="col-size"><input type="text" placeholder="125*250" id="isize-${id}" /></td>
+      <td class="col-thick"><input type="text" placeholder="10 mm" id="ithick-${id}" /></td>
+      <td class="col-sets"><input type="number" placeholder="0" id="isets-${id}" min="0" oninput="recalc()" /></td>
+      <td class="col-pcs"><input type="number" placeholder="0" id="ipcs-${id}" min="0" oninput="recalc()" /></td>
+      <td class="col-del">
+        <button type="button" class="del-btn" onclick="removeRow(${id})" aria-label="Remove row">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+    recalc();
+    document.getElementById('iname-' + id).focus();
+  }
+
+  function removeRow(id) {
+    const el = document.getElementById('row-' + id);
+    if (el) el.remove();
+    recalc();
+  }
+
+  function recalc() {
+    const rows = document.querySelectorAll('#itemsBody tr');
+    let items = 0, sets = 0, pcs = 0;
+    rows.forEach(row => {
+      const rid = row.id.replace('row-', '');
+      const name = (document.getElementById('iname-' + rid)?.value || '').trim();
+      const s = parseFloat(document.getElementById('isets-' + rid)?.value) || 0;
+      const p = parseFloat(document.getElementById('ipcs-' + rid)?.value) || 0;
+      if (name) { items++; sets += s; pcs += p; }
+    });
+    document.getElementById('totalItems').textContent = items;
+    document.getElementById('totalSets').textContent = sets;
+    document.getElementById('totalPcs').textContent = pcs;
+  }
+
+  function getItems() {
+    const rows = document.querySelectorAll('#itemsBody tr');
+    const result = [];
+    rows.forEach(row => {
+      const rid = row.id.replace('row-', '');
+      const name = (document.getElementById('iname-' + rid)?.value || '').trim();
+      const size = (document.getElementById('isize-' + rid)?.value || '').trim();
+      const thick = (document.getElementById('ithick-' + rid)?.value || '').trim();
+      const sets = (document.getElementById('isets-' + rid)?.value || '').trim();
+      const pcs = (document.getElementById('ipcs-' + rid)?.value || '').trim();
+      if (name) result.push({ name, size, thick, sets, pcs });
+    });
+    return result;
+  }
+
+  /* ── ERROR ── */
+  function showErr(msg) {
+    const bar = document.getElementById('errBar');
+    document.getElementById('errMsg').textContent = msg;
+    bar.classList.add('show');
+    bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function hideErr() { document.getElementById('errBar').classList.remove('show'); }
+
+  /* ── RECEIPT ── */
+  function showReceipt(orderNo, payload) {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    document.getElementById('r-orderNo').textContent = orderNo;
+    document.getElementById('r-datetime').textContent = dateStr + '  ·  ' + timeStr;
+    document.getElementById('r-salesperson').textContent = payload.salesperson;
+    document.getElementById('r-party').textContent = payload.partyName;
+    document.getElementById('r-reqby').textContent = payload.requestedBy || '—';
+    document.getElementById('r-shipto').textContent = payload.shipTo;
+    document.getElementById('r-dispatch').textContent = payload.dispatchDate
+      ? new Date(payload.dispatchDate + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+      : '—';
+
+    document.getElementById('successHeading').textContent = 'Order ' + orderNo + ' submitted';
+    document.getElementById('successSub').textContent = 'Logged to Google Sheet · ' + dateStr + ' ' + timeStr;
+
+    let ts = 0, tp = 0;
+    const rows = payload.items.map((it, i) => {
+      ts += parseFloat(it.sets) || 0;
+      tp += parseFloat(it.pcs) || 0;
+      return `<tr>
+        <td class="sr-col">${i + 1}</td>
+        <td>${it.name}</td>
+        <td>${it.size || '—'}</td>
+        <td>${it.thick || '—'}</td>
+        <td>${it.sets || 0}</td>
+        <td>${it.pcs || 0}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('r-items').innerHTML = rows;
+    document.getElementById('r-sets').textContent = ts;
+    document.getElementById('r-pcs').textContent = tp;
+
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('receiptView').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── RESET ── */
+  function resetForm() {
+    ['salesperson','dispatchDate','partyName','requestedBy','shipTo','note'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('itemsBody').innerHTML = '';
+    rowId = 0;
+    hideErr();
+    addItem();
+    document.getElementById('receiptView').style.display = 'none';
+    document.getElementById('formView').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── SUBMIT ── */
+  async function submitOrder() {
+    hideErr();
+
+    const salesperson  = document.getElementById('salesperson').value.trim();
+    const dispatchDate = document.getElementById('dispatchDate').value;
+    const partyName    = document.getElementById('partyName').value.trim();
+    const requestedBy  = document.getElementById('requestedBy').value.trim();
+    const shipTo       = document.getElementById('shipTo').value.trim();
+    const note         = document.getElementById('note').value.trim();
+    const items        = getItems();
+
+    if (!salesperson)  { showErr('Salesperson name is required.'); return; }
+    if (!partyName)    { showErr('Party name is required.'); return; }
+    if (!shipTo)       { showErr('Ship to address is required.'); return; }
+    if (!dispatchDate) { showErr('Dispatch priority date is required.'); return; }
+    if (items.length === 0) { showErr('Please add at least one item with a name.'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Submitting...';
+
+    const payload = { salesperson, partyName, shipTo, requestedBy, dispatchDate, note, items, submittedAt: new Date().toISOString() };
+
+    try {
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(payload));
+
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+      });
+      const result = await res.json();
+      if (result.status === 'success') {
+        showReceipt(result.orderNo, payload);
+      } else {
+        showErr('Submission failed: ' + (result.message || 'Unknown error'));
+      }
+    } catch (e) {
+      showErr('Submission failed: ' + e.message);
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit order';
+  }
+
+  /* ── WIRE UP ── */
+  document.getElementById('addItemBtn').addEventListener('click', addItem);
+  document.getElementById('submitBtn').addEventListener('click', submitOrder);
+  document.getElementById('newOrderBtn').addEventListener('click', resetForm);
+
+  /* ── INIT ── */
+  addItem();
+</script>
+</body>
+</html>
